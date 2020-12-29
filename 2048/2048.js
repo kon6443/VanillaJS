@@ -14,6 +14,48 @@ let tableID = Array(
 
 let score;
 
+
+
+
+// Rotate the board
+function rotate(reps) {
+  while(reps--) {
+    let temp = Array(Array(0,0,0,0),Array(0,0,0,0),Array(0,0,0,0),Array(0,0,0,0));
+    for(let i=0;i<4;i++) {
+      for(let j=0;j<4;j++) {
+        temp[i][j] = board[i][j];
+      }
+    }
+    for(let i=0;i<4;i++) {
+      for(let j=0;j<4;j++) {
+        board[i][j] = temp[3-j][i];
+      }
+    }
+  }
+}
+
+// Rotate the board n times depends on the direction
+function moveDir(opt){
+  switch(opt){
+      case 0: move(); break; //up
+      case 1: rotate(2); move(); rotate(2); break; //down
+      case 2: rotate(1); move(); rotate(3); break; //left
+      case 3: rotate(3); move(); rotate(1); break; //right
+  }
+  update();
+}
+
+
+document.onkeydown = keyDownEventHandler;
+function keyDownEventHandler(e){
+    switch(e.keyCode){
+        case 38: moveDir(0); break; //up
+        case 40: moveDir(1); break; //down
+        case 37: moveDir(2); break; //left
+        case 39: moveDir(3); break; //right
+    }
+}
+
 function painting(cell) {
   let cellNum = parseInt(cell.innerHTML);
   switch (cellNum) {
