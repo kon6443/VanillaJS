@@ -14,18 +14,56 @@ let tableID = Array(
 
 let score;
 
+function gameOver() {
+  alert("[Game Over]\nMax: "+getMaxNum()+"\nScore"+score);
+  init();
+}
+
+function checkGameOver() {
+  for (let i = 0; i < 4; i++) {
+    let colCheck = board[i][0];
+    if(colCheck === 0) return;
+    for(let j=1;j<4;j++) {
+      if((colCheck === board[i][j]) || (board[i][j] === 0)) return;
+      else colCheck = board[i][j];
+    }
+  }
+  for(let i=0;i<4;i++) {
+    let rowCheck = board[0][i];
+    if(rowCheck === 0) return;
+    for(let j=1;j<4;j++) {
+      if((rowCheck === board[j][i]) || (board[j][i] === 0)) return;
+      else rowCheck = board[j][i];
+    }
+  }
+  gameOver();
+}
+
+function getMaxNum() {
+  let temp = 0;
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (board[i][j] > temp) temp = board[i][j];
+    }
+  }
+  return temp;
+}
+
+function getNewNum() {
+  let rand = Math.floor(Math.random() * 10); // 0~10
+  return rand === 0 ? 4 : 2;
+}
+
 function generate() {
   let numZero = 0;
-  for(let i=0;i<4;i++)
-    for(let j=0;j<4;j++)
-      if(board[i][j] === 0)
-        numZero++;
-  while(true) {
-    for(let i=0;i<4;i++)
-      for(let j=0;j<4;j++)
-        if(board[i][j] === 0) {
-          let rand = Math.floor(Math.random()*numZero);
-          if(rand === 0) {
+  for (let i = 0; i < 4; i++)
+    for (let j = 0; j < 4; j++) if (board[i][j] === 0) numZero++;
+  while (true) {
+    for (let i = 0; i < 4; i++)
+      for (let j = 0; j < 4; j++)
+        if (board[i][j] === 0) {
+          let rand = Math.floor(Math.random() * numZero); // 0~numZero
+          if (rand === 0) {
             board[i][j] = getNewNum();
             return;
           }
