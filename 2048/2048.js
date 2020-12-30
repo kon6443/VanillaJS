@@ -14,6 +14,25 @@ let tableID = Array(
 
 let score;
 
+function generate() {
+  let numZero = 0;
+  for(let i=0;i<4;i++)
+    for(let j=0;j<4;j++)
+      if(board[i][j] === 0)
+        numZero++;
+  while(true) {
+    for(let i=0;i<4;i++)
+      for(let j=0;j<4;j++)
+        if(board[i][j] === 0) {
+          let rand = Math.floor(Math.random()*numZero);
+          if(rand === 0) {
+            board[i][j] = getNewNum();
+            return;
+          }
+        }
+  }
+}
+
 // Moving up all the tiles
 function move() {
   let isMoved = false;
@@ -28,16 +47,16 @@ function move() {
       if (board[i][j] === 0) continue;
       let tempY = i - 1;
       while (tempY > 0 && board[tempY][j] === 0) tempY--; // if a tile can go up one unit more
-      if (borad[tempY][j] === 0) {
+      if (board[tempY][j] === 0) {
         // when there is space to go further above
-        borad[tempY][j] = borad[i][j];
-        borad[i][j] = 0;
+        board[tempY][j] = board[i][j];
+        board[i][j] = 0;
         isMoved = true;
-      } else if (borad[tempY][j] !== borad[i][j]) {
+      } else if (board[tempY][j] !== board[i][j]) {
         // when tempY and i tile is different so can't go above further
         if (tempY === i) continue; // exception: when tempY and i tiles are actually the same tiles
-        borad[tempY + 1][j] = board[i][j];
-        borad[i][j] = 0;
+        board[tempY + 1][j] = board[i][j];
+        board[i][j] = 0;
         isMoved = true;
       } else {
         // adding
@@ -188,7 +207,7 @@ function update() {
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
       let cell = document.getElementById(tableID[i][j]);
-      cell.innerHTML = borad[i][j] === 0 ? "" : board[i][j];
+      cell.innerHTML = board[i][j] === 0 ? "" : board[i][j];
       painting(cell);
     }
   }
