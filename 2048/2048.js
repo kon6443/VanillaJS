@@ -14,46 +14,114 @@ let tableID = Array(
 
 let score;
 
-
-
+// Moving up all the tiles
+function move() {
+  let isMoved = false;
+  let isPlused = Array(
+    Array(0, 0, 0, 0),
+    Array(0, 0, 0, 0),
+    Array(0, 0, 0, 0),
+    Array(0, 0, 0, 0)
+  );
+  for (let i = 1; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (board[i][j] === 0) continue;
+      let tempY = i - 1;
+      while (tempY > 0 && board[tempY][j] === 0) tempY--; // if a tile can go up one unit more
+      if (borad[tempY][j] === 0) {
+        // when there is space to go further above
+        borad[tempY][j] = borad[i][j];
+        borad[i][j] = 0;
+        isMoved = true;
+      } else if (borad[tempY][j] !== borad[i][j]) {
+        // when tempY and i tile is different so can't go above further
+        if (tempY === i) continue; // exception: when tempY and i tiles are actually the same tiles
+        borad[tempY + 1][j] = board[i][j];
+        borad[i][j] = 0;
+        isMoved = true;
+      } else {
+        // adding
+        if (isPlused[tempY][j] === 0) {
+          board[tempY][j] *= 2;
+          score += board[tempY][j];
+          board[i][j] = 0;
+          isPlused[tempY][j] = 1;
+          isMoved = true;
+        } else {
+          board[tempY + 1][j] = board[i][j];
+          board[i][j] = 0;
+          isMoved = true;
+        }
+      }
+    }
+  }
+  if (isMoved) generate();
+  else checkGameOver();
+}
 
 // Rotate the board
 function rotate(reps) {
-  while(reps--) {
-    let temp = Array(Array(0,0,0,0),Array(0,0,0,0),Array(0,0,0,0),Array(0,0,0,0));
-    for(let i=0;i<4;i++) {
-      for(let j=0;j<4;j++) {
+  while (reps--) {
+    let temp = Array(
+      Array(0, 0, 0, 0),
+      Array(0, 0, 0, 0),
+      Array(0, 0, 0, 0),
+      Array(0, 0, 0, 0)
+    );
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
         temp[i][j] = board[i][j];
       }
     }
-    for(let i=0;i<4;i++) {
-      for(let j=0;j<4;j++) {
-        board[i][j] = temp[3-j][i];
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        board[i][j] = temp[3 - j][i];
       }
     }
   }
 }
 
 // Rotate the board n times depends on the direction
-function moveDir(opt){
-  switch(opt){
-      case 0: move(); break; //up
-      case 1: rotate(2); move(); rotate(2); break; //down
-      case 2: rotate(1); move(); rotate(3); break; //left
-      case 3: rotate(3); move(); rotate(1); break; //right
+function moveDir(opt) {
+  switch (opt) {
+    case 0:
+      move();
+      break; //up
+    case 1:
+      rotate(2);
+      move();
+      rotate(2);
+      break; //down
+    case 2:
+      rotate(1);
+      move();
+      rotate(3);
+      break; //left
+    case 3:
+      rotate(3);
+      move();
+      rotate(1);
+      break; //right
   }
   update();
 }
 
-
 document.onkeydown = keyDownEventHandler;
-function keyDownEventHandler(e){
-    switch(e.keyCode){
-        case 38: moveDir(0); break; //up
-        case 40: moveDir(1); break; //down
-        case 37: moveDir(2); break; //left
-        case 39: moveDir(3); break; //right
-    }
+function keyDownEventHandler(e) {
+  switch (e.keyCode) {
+    case 38:
+      moveDir(0);
+      break; //up
+    case 40:
+      moveDir(1);
+      break; //down
+    case 37:
+      moveDir(2);
+      break; //left
+    case 39:
+      moveDir(3);
+      break; //right
+  }
 }
 
 function painting(cell) {
