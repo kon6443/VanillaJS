@@ -15,24 +15,24 @@ let tableID = Array(
 let score;
 
 function gameOver() {
-  alert("[Game Over]\nMax: "+getMaxNum()+"\nScore"+score);
+  alert("[Game Over]\nMax: " + getMaxNum() + "\nScore" + score);
   init();
 }
 
 function checkGameOver() {
   for (let i = 0; i < 4; i++) {
     let colCheck = board[i][0];
-    if(colCheck === 0) return;
-    for(let j=1;j<4;j++) {
-      if((colCheck === board[i][j]) || (board[i][j] === 0)) return;
+    if (colCheck === 0) return;
+    for (let j = 1; j < 4; j++) {
+      if (colCheck === board[i][j] || board[i][j] === 0) return;
       else colCheck = board[i][j];
     }
   }
-  for(let i=0;i<4;i++) {
+  for (let i = 0; i < 4; i++) {
     let rowCheck = board[0][i];
-    if(rowCheck === 0) return;
-    for(let j=1;j<4;j++) {
-      if((rowCheck === board[j][i]) || (board[j][i] === 0)) return;
+    if (rowCheck === 0) return;
+    for (let j = 1; j < 4; j++) {
+      if (rowCheck === board[j][i] || board[j][i] === 0) return;
       else rowCheck = board[j][i];
     }
   }
@@ -71,6 +71,7 @@ function generate() {
   }
 }
 
+
 // Moving up all the tiles
 function move() {
   let isMoved = false;
@@ -92,11 +93,11 @@ function move() {
         isMoved = true;
       } else if (board[tempY][j] !== board[i][j]) {
         // when tempY and i tile is different so can't go above further
-        if (tempY === i) continue; // exception: when tempY and i tiles are actually the same tiles
+        if (tempY+1 === i) continue; // exception: when tempY and i tiles are actually the same tiles
         board[tempY + 1][j] = board[i][j];
         board[i][j] = 0;
         isMoved = true;
-      } else {
+      } else { 
         // adding
         if (isPlused[tempY][j] === 0) {
           board[tempY][j] *= 2;
@@ -187,43 +188,44 @@ function painting(cell) {
     case 0:
     case 2:
       cell.style.color = "#684A23";
-      cell.style.background = "#FBEDDC";
+      cell.style.background = "#FFFFFF";
       break;
     case 4:
       cell.style.color = "#684A23";
-      cell.style.background = "#F9E2C7";
+      cell.style.background = "#DCDCDC";
       break;
     case 8:
       cell.style.color = "#684A23";
-      cell.style.background = "#F6D5AB";
+      cell.style.background = "#C0C0C0";
       break;
     case 16:
+      //cell.style.color = "#684A23";
       cell.style.color = "#684A23";
-      cell.style.background = "#F2C185";
+      cell.style.background = "#A9A9A9";
       break;
     case 32:
-      cell.style.color = "#684A23";
-      cell.style.background = "#EFB46D";
+      cell.style.color = "#FFFFFF";
+      cell.style.background = "#808080";
       break;
     case 64:
       cell.style.color = "#FFFFFF";
-      cell.style.background = "#EBA24A";
+      cell.style.background = "#696969";
       break;
     case 128:
       cell.style.color = "#FFFFFF";
-      cell.style.background = "#E78F24";
+      cell.style.background = "#778899";
       break;
     case 256:
       cell.style.color = "#FFFFFF";
-      cell.style.background = "#E87032";
+      cell.style.background = "#708090";
       break;
     case 512:
       cell.style.color = "#FFFFFF";
-      cell.style.background = "#E85532";
+      cell.style.background = "#FF8C00";
       break;
     case 1024:
       cell.style.color = "#FFFFFF";
-      cell.style.background = "#E84532";
+      cell.style.background = "#FF4500";
       break;
     case 2048:
       cell.style.color = "#FFFFFF";
@@ -235,7 +237,7 @@ function painting(cell) {
         cell.style.background = "#E51A1A";
       } else {
         cell.style.color = "#684A23";
-        cell.style.background = "#FBEDDC";
+        cell.style.background = "#dcf0fb";
       }
       break;
   }
