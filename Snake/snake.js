@@ -11,14 +11,48 @@ let snakeColor = "#ED5B5B",
   tileColor = "#EEEEEE";
 (wallColor = "#2E2E2E"), (coinColor = "#4476C6");
 
+function isInQueue(y, x) {
+  let p = new Array(y, x);
+}
+
+function isCollapsed(y, x) {
+  if (isInQueue(y, x)) return true;
+  return false;
+}
+
+function isInvalidMove(y, x) {
+  return y == 0 || y == MY - 1 || x == 0 || x == MX - 1 || isCollapsed(y, x);
+}
+
+function showPlus() {
+  let plusedScore = 100 * (snakeQueue.length - 1);
+
+  // showing + score
+  document.getElementById("plus").innerHTML = "     +" + plusedScore;
+  // remove the plused scored on the board
+  setTimeout('document.getElementById("plus").innerHTML=""', 1000);
+}
+
+function meetCoin() {
+  if (isCoin()) {
+    score += 100 * (snakeQueue.length - 1);
+    setCoin();
+    showPlus();
+    document.getElementById(String(y) + " " + String(x)).style.borderRadius =
+      "3px";
+  } else {
+    removeSnake(y, x);
+    score += snakeQueue.length;
+  }
+}
+
 function move(direction) {
   switch (direction) {
     case 0:
-      y += 1;
-      break;
-    case 1:
       y -= 1;
       break;
+    case 1:
+      y += 1;
     case 2:
       x -= 1;
       break;
@@ -28,23 +62,25 @@ function move(direction) {
     default:
       return;
   }
-  if(isInvalidMove(x, y)) gameOver();
-  setSnake(x, y);
+  if (isInvalidMove(y, x)) gameOver();
+  setSnake(y, x);
   meetCoin();
   scoring();
 }
 
-/*
 function removeSnake() {
-    let ty = snakeQueue[0][];
-    //let tx = snakeQueue[][];
-}
-*/
-
-function setSnake(x, y) {
-  snakeQueue.push(new Array(x, y));
+  let ty = snakeQueue[0][0];
+  let tx = snakeQueue[0][1];
+  snakeQueue.shift();
   document.getElementById(
-    String(x) + " " + String(y)
+    String(ty) + " " + String(tx)
+  ).style.background = tileColor;
+}
+
+function setSnake(y, x) {
+  snakeQueue.push(new Array(y, x));
+  document.getElementById(
+    String(y) + " " + String(x)
   ).style.background = snakeColor;
 }
 
@@ -79,10 +115,13 @@ function drawBoard() {
 
 document.onkeydown = keyDownEventHandler;
 function keyDownEventHandler(e) {
-    if((e.keyCode === 38) && (direction !== 1)) direction = 0;
-    else if((e.keyCode === 40) && (direction !== 0)) direction = 1;
-    else if((e.keyCode === 37) && (direction !== 3)) direction = 2;
-    else if((e.keyCode === 39) && (direction !== 2)) direction = 3;
+  if (e.keyCode === 38 && direction !== 1) direction = 0;
+  // up
+  else if (e.keyCode === 40 && direction !== 0) direction = 1;
+  // down
+  else if (e.keyCode === 37 && direction !== 3) direction = 2;
+  // left
+  else if (e.keyCode === 39 && direction !== 2) direction = 3; // right
 }
 
 function init() {
