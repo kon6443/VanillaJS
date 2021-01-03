@@ -11,8 +11,37 @@ let snakeColor = "#ED5B5B",
   tileColor = "#EEEEEE";
 (wallColor = "#2E2E2E"), (coinColor = "#4476C6");
 
+
+function gameOver() {
+    alert("[Game Over]\nScore: "+score);
+    init();
+    location.reload();
+}
+
+function scoring() {
+    document.getElementById("score").innerHTML = score; 
+}
+
+function isCoin() {
+    return (y==cy && x==cx);
+}
+
+function setCoin() {
+    do {
+        let rand = Math.floor(Math.random() * ((MY-2)*(MX-2)));
+        cy = Math.floor(rand/(MX-2)) + 1;
+        cx = rand % (MX-2) + 1;
+    } while(isInQueue(cy, cx))
+    document.getElementById(String(cy) + " " + String(cx)).style.background = coinColor;
+    document.getElementById(String(cy) + " " + String(cx)).style.borderRadius = "6px";
+}
+
 function isInQueue(y, x) {
   let p = new Array(y, x);
+  for(let i=0;i<snakeQueue.length;i++) {
+    if((snakeQueue[i][0] === p[0]) && (snakeQueue[i][1] === p[1]))  return true;
+    else return false;
+  }
 }
 
 function isCollapsed(y, x) {
@@ -115,13 +144,10 @@ function drawBoard() {
 
 document.onkeydown = keyDownEventHandler;
 function keyDownEventHandler(e) {
-  if (e.keyCode === 38 && direction !== 1) direction = 0;
-  // up
-  else if (e.keyCode === 40 && direction !== 0) direction = 1;
-  // down
-  else if (e.keyCode === 37 && direction !== 3) direction = 2;
-  // left
-  else if (e.keyCode === 39 && direction !== 2) direction = 3; // right
+  if (e.keyCode === 38 && direction !== 1) direction = 0;   // up
+  else if (e.keyCode === 40 && direction !== 0) direction = 1;  // down
+  else if (e.keyCode === 37 && direction !== 3) direction = 2;  // left
+  else if (e.keyCode === 39 && direction !== 2) direction = 3;  // right
 }
 
 function init() {
