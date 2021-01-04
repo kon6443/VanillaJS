@@ -41,11 +41,21 @@ function setCoin() {
 
 function isInQueue(y, x) {
   let p = new Array(y, x);
-  for (let i = 0; i < snakeQueue.length; i++) {
+  for (let i = 0; i < snakeQueue.length; i++) 
     if (snakeQueue[i][0] === p[0] && snakeQueue[i][1] === p[1]) return true;
-    else return false;
-  }
+  return false;
 }
+
+
+/*
+function isInQueue(y,x){
+    var p = new Array(y,x);
+    for(var i=0;i<snakeQueue.length;i++)
+        if(snakeQueue[i][0]==p[0] && snakeQueue[i][1]==p[1])
+            return true;
+    return false;
+}
+*/
 
 function isCollapsed(y, x) {
   if (isInQueue(y, x)) return true;
