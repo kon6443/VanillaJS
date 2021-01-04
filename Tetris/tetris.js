@@ -1,0 +1,7 @@
+
+
+funtion init()) {
+
+}
+
+init();
