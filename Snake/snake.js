@@ -46,17 +46,6 @@ function isInQueue(y, x) {
   return false;
 }
 
-
-/*
-function isInQueue(y,x){
-    var p = new Array(y,x);
-    for(var i=0;i<snakeQueue.length;i++)
-        if(snakeQueue[i][0]==p[0] && snakeQueue[i][1]==p[1])
-            return true;
-    return false;
-}
-*/
-
 function isCollapsed(y, x) {
   if (isInQueue(y, x)) return true;
   return false;
