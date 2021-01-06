@@ -10,33 +10,45 @@ const KEY = {
 
 let height = 34; // field size
 let width = 20; // field size
+let tileColor = "rgb(9,17,26)",
+  tetrominoColor,
+  wallColor = "#7D7D7D";
+let currentColorIndex, nextColorIndex;
+let currentTetromino, nextTetromino;
+let tetrominoPoint;
+let generatePoint = [1, Math.floor(width / 2) - 2];
+let tetrominoCell;
+let movingSpeed, initSpeed;
+let score,
+  level,
+  levelStack = 0;
 
-let TETROMINO = [
+let TETROMINOES = [
   [
     // I
     [
       [0, 0, 0, 0],
       [1, 1, 1, 1],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 0, 0, 0],
       [1, 1, 1, 1],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 0, 0, 0],
       [1, 1, 1, 1],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 0, 0, 0],
       [1, 1, 1, 1],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
   ],
   [
@@ -45,25 +57,25 @@ let TETROMINO = [
       [0, 1, 1, 0],
       [0, 1, 0, 0],
       [0, 1, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 1, 0, 0],
       [0, 1, 1, 1],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 0, 1, 0],
       [0, 0, 1, 0],
       [0, 1, 1, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 1, 1, 1],
       [0, 0, 0, 1],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
   ],
   [
@@ -72,25 +84,25 @@ let TETROMINO = [
       [0, 1, 1, 0],
       [0, 0, 1, 0],
       [0, 0, 1, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 0, 0, 1],
       [0, 1, 1, 1],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 1, 0, 0],
       [0, 1, 0, 0],
       [0, 1, 1, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 1, 1, 1],
       [0, 1, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
   ],
   [
@@ -99,25 +111,25 @@ let TETROMINO = [
       [0, 1, 1, 0],
       [0, 1, 1, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 1, 1, 0],
       [0, 1, 1, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 1, 1, 0],
       [0, 1, 1, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 1, 1, 0],
       [0, 1, 1, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
   ],
   [
@@ -126,25 +138,25 @@ let TETROMINO = [
       [0, 0, 1, 0],
       [0, 1, 1, 1],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 0, 1, 0],
       [0, 0, 1, 1],
       [0, 0, 1, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 0, 0, 0],
       [0, 1, 1, 1],
       [0, 0, 1, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 0, 1, 0],
       [0, 1, 1, 0],
       [0, 0, 1, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
   ],
   [
@@ -153,25 +165,25 @@ let TETROMINO = [
       [0, 1, 0, 0],
       [0, 1, 1, 0],
       [0, 0, 1, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 0, 1, 1],
       [0, 1, 1, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 1, 0, 0],
       [0, 1, 1, 0],
       [0, 0, 1, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 0, 1, 1],
       [0, 1, 1, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
   ],
   [
@@ -180,30 +192,113 @@ let TETROMINO = [
       [0, 0, 1, 0],
       [0, 1, 1, 0],
       [0, 1, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 1, 1, 0],
       [0, 0, 1, 1],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 0, 1, 0],
       [0, 1, 1, 0],
       [0, 1, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
     [
       [0, 1, 1, 0],
       [0, 0, 1, 1],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ],
   ],
 ];
 
-function drawField() {}
+let tetrominoColorArray = [
+  "rgb(199,82,82)",
+  "rgb(233,174,43)",
+  "rgb(105,155,55)",
+  "rgb(53,135,145)",
+  "rgb(49,95,151)",
+  "rgb(102,86,167)",
+];
+
+function displayNextTetromino() {}
+
+function generateTetromino() {
+  for (let i = 0; i < 2; i++) tetrominoPoint[i] = generatePoint[i];
+  currentTetromino = nextTetromino;
+  currentColorIndex = nextColorIndex;
+  tetrominoColor = tetrominoColorArray[currentColorIndex];
+  let tetromino = TETROMINOES[currentTetromino];
+  pickingNextTetromino();
+  pickingNextColor();
+  displayNextTetromino();
+  for (let i = 0; i < tetromino.length; i++) {
+    let sy = tetrominoPoint[0] + shape[i][0];
+    let sx = tetrominoPoint[1] + shape[i][1];
+    if (!isValidPoint(sy, sx)) gameOver();
+    let el = shortCut(Math.floor(sy), Math.floor(sx));
+    el.style.background = shapeColor;
+    shapeCell.push([sy, sx]);
+  }
+  levelStack++;
+  leveling();
+  movingThread = setTimeout("moveDown()", movingSpeed);
+}
+
+function pickingNextColor() {
+  if (++nextColorIndex === tetrominoColorArray.length) nextColorIndex = 0;
+}
+
+function pickingNextTetromino() {
+  nextTetromino = Math.floor(Math.random() * TETROMINOES.length);
+}
+
+function setWall() {
+  for (var i = 0; i < height; i++) {
+    shortCut(i, 0).style.background = wallColor;
+    shortCut(i, width - 1).style.background = wallColor;
+    realField[i][0] = true;
+    realField[i][width - 1] = true;
+  }
+  for (var i = 0; i < width; i++) {
+    shortCut(0, i).style.background = wallColor;
+    shortCut(height - 1, i).style.background = wallColor;
+    realField[0][i] = true;
+    realField[height - 1][i] = true;
+  }
+}
+
+function shortCut(y, x) {
+  var temp = document.getElementById(String(y) + " " + String(x));
+  return temp;
+}
+
+//  generating a real field
+function generateField() {
+  //  making an a height length array
+  realField = new Array(height);
+  //    each element of the array is a width length array (which is a 2D array)
+  for (let i = 0; i < height; i++) realField[i] = new Array(width);
+  // every single array has false value to make sure that all the field are empty.
+  for (let i = 0; i < height; i++)
+    for (let j = 0; j < width; j++) realField[i][j] = false;
+}
+
+//  drawing a field visually
+function drawField() {
+  let fieldTag = '<table id="gameTable" border=0>';
+  for (let i = 0; i < height; i++) {
+    fieldTag += "<tr>";
+    for (let j = 0; j < width; j++) {
+      fieldTag += '<td id="' + String(i) + " " + String(j) + '"></td>';
+    }
+    fieldTag += "</tr>";
+  }
+  document.write(fieldTag);
+}
 
 document.onkeyup = keyUpEventHandler;
 function keyUpEventHandler(e) {
@@ -233,6 +328,17 @@ function keyDownEventHandler(e) {
 
 function init() {
   drawField();
+  generateField();
+  setWall();
+  nextColorIndex = -1;
+  movingSpeed = initSpeed;
+  tetrominoCell = [];
+  tetrominoPoint[(1, 1)];
+  score = 0;
+  level = 1;
+  pickingNextTetromino();
+  pickingNextColor();
+  generateTetromino();
 }
 
 init();
