@@ -224,7 +224,7 @@ let tetrominoColorArray = [
   "rgb(102,86,167)",
 ];
 
-function displayNextTetromino() {}
+//function displayNextTetromino() {}
 
 function generateTetromino() {
   for (let i = 0; i < 2; i++) tetrominoPoint[i] = generatePoint[i];
@@ -236,12 +236,14 @@ function generateTetromino() {
   pickingNextColor();
   displayNextTetromino();
   for (let i = 0; i < tetromino.length; i++) {
-    let sy = tetrominoPoint[0] + shape[i][0];
-    let sx = tetrominoPoint[1] + shape[i][1];
+    let sy = tetrominoPoint[0] + tetromino[i][0];
+    let sx = tetrominoPoint[1] + tetromino[i][1];
+    console.log("sy: ", sy);
+    console.log("sx: ", sx);
     if (!isValidPoint(sy, sx)) gameOver();
     let el = shortCut(Math.floor(sy), Math.floor(sx));
     el.style.background = shapeColor;
-    shapeCell.push([sy, sx]);
+    tetrominoCell.push([sy, sx]);
   }
   levelStack++;
   leveling();
@@ -333,7 +335,7 @@ function init() {
   nextColorIndex = -1;
   movingSpeed = initSpeed;
   tetrominoCell = [];
-  tetrominoPoint[(1, 1)];
+  tetrominoPoint = [1, 1];
   score = 0;
   level = 1;
   pickingNextTetromino();
