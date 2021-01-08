@@ -224,31 +224,15 @@ let tetrominoColorArray = [
   "rgb(102,86,167)",
 ];
 
-//function displayNextTetromino() {}
-
-function generateTetromino() {
-  for (let i = 0; i < 2; i++) tetrominoPoint[i] = generatePoint[i];
-  currentTetromino = nextTetromino;
-  currentColorIndex = nextColorIndex;
-  tetrominoColor = tetrominoColorArray[currentColorIndex];
-  let tetromino = TETROMINOES[currentTetromino];
-  pickingNextTetromino();
-  pickingNextColor();
-  displayNextTetromino();
-  for (let i = 0; i < tetromino.length; i++) {
-    let sy = tetrominoPoint[0] + tetromino[i][0];
-    let sx = tetrominoPoint[1] + tetromino[i][1];
-    console.log("sy: ", sy);
-    console.log("sx: ", sx);
-    if (!isValidPoint(sy, sx)) gameOver();
-    let el = shortCut(Math.floor(sy), Math.floor(sx));
-    el.style.background = shapeColor;
-    tetrominoCell.push([sy, sx]);
+function initNextTable() {
+  for(let i=0;i<4;i++) {
+    for(let j=0;j<4;j++) {
+      shortCut(String(i), String(j)).style.background = "#7D7D7D";
+    }
   }
-  levelStack++;
-  leveling();
-  movingThread = setTimeout("moveDown()", movingSpeed);
 }
+
+
 
 function pickingNextColor() {
   if (++nextColorIndex === tetrominoColorArray.length) nextColorIndex = 0;
@@ -277,6 +261,44 @@ function shortCut(y, x) {
   var temp = document.getElementById(String(y) + " " + String(x));
   return temp;
 }
+
+function generateTetromino() {
+  for (let i = 0; i < 2; i++) tetrominoPoint[i] = generatePoint[i];
+  currentTetromino = nextTetromino;
+  currentColorIndex = nextColorIndex;
+  tetrominoColor = tetrominoColorArray[currentColorIndex];
+  let tetromino = TETROMINOES[currentTetromino];
+  pickingNextTetromino();
+  pickingNextColor();
+  displayNextTetromino();
+  for (let i = 0; i < tetromino.length; i++) {
+    let sy = tetrominoPoint[0] + tetromino[i][0];
+    let sx = tetrominoPoint[1] + tetromino[i][1];
+    if (!isValidPoint(sy, sx)) gameOver();
+    //let el = shortCut(Math.floor(sy), Math.floor(sx));
+    //el.style.background = tetrominoColor;
+    shortCut(Math.floor(sy), Math.floor(sx)).style.background = tetrominoColor;
+    tetrominoCell.push([sy, sx]);
+  }
+  levelStack++;
+  leveling();
+  movingThread = setTimeout("moveDown()", movingSpeed);
+}
+
+function displayNextTetromino() {
+  initNextTable();
+  let tetromino = TETROMINOES[nextTetromino];
+  let color = tetrominoColorArray[nextColorIndex];
+  for (let i = 0; i < tetromino.length; i++) {
+    let y = tetromino[i][0];
+    let x = tetromino[i][1];
+//    document.getElementById(String(y)+String(x)).style.background = color;
+    shortCut(String(y), String(x)).style.background = color;
+  }
+}
+
+
+
 
 //  generating a real field
 function generateField() {
