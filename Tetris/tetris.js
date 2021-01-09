@@ -224,42 +224,27 @@ let tetrominoColorArray = [
   "rgb(102,86,167)",
 ];
 
+function moveDown() {
+  if(!canMove(1,0)) {
+    commitExist();
+    checkLine();
+    tetrominoCel = [];
+    generateTetromino();
+    return;
+  }
+  removeTetromino();
+  for(let i=0;i<tetrominoCell.length;i++) tetrominoCell[i][0]++;
+  tetrominoPoint[0]++;
+  showTetromino();
+  movingThread = setTime("moveDown()", movingSpeed);
+}
+
 function initNextTable() {
   for(let i=0;i<4;i++) {
     for(let j=0;j<4;j++) {
       shortCut(String(i), String(j)).style.background = "#7D7D7D";
     }
   }
-}
-
-
-
-function pickingNextColor() {
-  if (++nextColorIndex === tetrominoColorArray.length) nextColorIndex = 0;
-}
-
-function pickingNextTetromino() {
-  nextTetromino = Math.floor(Math.random() * TETROMINOES.length);
-}
-
-function setWall() {
-  for (var i = 0; i < height; i++) {
-    shortCut(i, 0).style.background = wallColor;
-    shortCut(i, width - 1).style.background = wallColor;
-    realField[i][0] = true;
-    realField[i][width - 1] = true;
-  }
-  for (var i = 0; i < width; i++) {
-    shortCut(0, i).style.background = wallColor;
-    shortCut(height - 1, i).style.background = wallColor;
-    realField[0][i] = true;
-    realField[height - 1][i] = true;
-  }
-}
-
-function shortCut(y, x) {
-  var temp = document.getElementById(String(y) + " " + String(x));
-  return temp;
 }
 
 function generateTetromino() {
@@ -293,12 +278,38 @@ function displayNextTetromino() {
     let y = tetromino[i][0];
     let x = tetromino[i][1];
 //    document.getElementById(String(y)+String(x)).style.background = color;
-    shortCut(String(y), String(x)).style.background = color;
+    shortCut(y, x).style.background = color;
+    //shortCut(String(y)+String(x)).style.background = color;
   }
 }
 
+function pickingNextColor() {
+  if (++nextColorIndex === tetrominoColorArray.length) nextColorIndex = 0;
+}
 
+function pickingNextTetromino() {
+  nextTetromino = Math.floor(Math.random() * TETROMINOES.length);
+}
 
+function setWall() {
+  for (var i = 0; i < height; i++) {
+    shortCut(i, 0).style.background = wallColor;
+    shortCut(i, width - 1).style.background = wallColor;
+    realField[i][0] = true;
+    realField[i][width - 1] = true;
+  }
+  for (var i = 0; i < width; i++) {
+    shortCut(0, i).style.background = wallColor;
+    shortCut(height - 1, i).style.background = wallColor;
+    realField[0][i] = true;
+    realField[height - 1][i] = true;
+  }
+}
+
+function shortCut(y, x) {
+  var temp = document.getElementById(String(y) + " " + String(x));
+  return temp;
+}
 
 //  generating a real field
 function generateField() {
@@ -350,6 +361,7 @@ function keyDownEventHandler(e) {
   }
 }
 
+
 function init() {
   drawField();
   generateField();
@@ -364,5 +376,6 @@ function init() {
   pickingNextColor();
   generateTetromino();
 }
+
 
 init();
