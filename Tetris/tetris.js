@@ -224,6 +224,13 @@ let tetrominoColorArray = [
   "rgb(102,86,167)",
 ];
 
+function rotateTetromino() {
+  if(!canRotate()) return;
+  removeTetromino();
+  tetrominoCell = [];
+  
+}
+ 
 function moveDown() {
   if(!canMove(1,0)) {
     commitExist();
@@ -350,7 +357,7 @@ function keyDownEventHandler(e) {
       setTimeOut("moveLR(1)", 0);
       break;
     case KEY.SPACE:
-      setTimeOut("rotateShape()", 0);
+      setTimeOut("rotateTetromino()", 0);
       break;
     case KEY.DOWN:
       moveFast();
