@@ -228,11 +228,23 @@ let tetrominoColorArray = [
   "rgb(102,86,167)",
 ];
 
+function isValidPoint(y, x) {
+  return !(y <= 0 || y >= H - 1 || x <= 0 || x >= W - 1 || existField[y][x]);
+}
+
 function canRotate() {
-  let tempTetromino = tetromino;
-  for()i=0;i<tetromino.length;i++ {
-    
+  let tempTetromino = TETROMINOES[currentTetromino][currentRotateIndex];
+  console.log(tempTetromino);
+  for (let i = 0; i < tempTetromino.length; i++) {
+    for (let j = 0; j < tempTetromino.length; j++) {
+      if (tempTetromino[i][j] === 1) {
+        let ty = tetrominoPoint[0] + j;
+        let tx = tetrominoPoint[1] + i;
+        if (!isValidPoint(ty, tx)) return false;
+      }
+    }
   }
+  return true;
 }
 
 function rotateTetromino() {
@@ -256,6 +268,7 @@ function rotateTetromino() {
       }
     }
   }
+  showTetromino();
 }
 
 function moveDown() {
@@ -410,6 +423,7 @@ function init() {
   pickingNextTetromino();
   pickingNextColor();
   generateTetromino();
+  canRotate();
 }
 
 init();
