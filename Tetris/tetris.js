@@ -14,11 +14,15 @@ let tileColor = "rgb(9,17,26)",
   tetrominoColor,
   wallColor = "#7D7D7D";
 let currentColorIndex, nextColorIndex;
+let currentRotateIndex = 0;
 let currentTetromino, nextTetromino;
 let tetrominoPoint;
 let generatePoint = [1, Math.floor(width / 2) - 2];
 let tetrominoCell;
-let movingSpeed, initSpeed;
+let movingSpeed,
+  initSpeed = 500;
+let deltaSpeed = 40;
+let fastSpeed = 25;
 let score,
   level,
   levelStack = 0;
@@ -224,31 +228,54 @@ let tetrominoColorArray = [
   "rgb(102,86,167)",
 ];
 
+function canRotate() {
+  let tempTetromino = tetromino;
+  for()i=0;i<tetromino.length;i++ {
+    
+  }
+}
+
 function rotateTetromino() {
-  if(!canRotate()) return;
+  if (!canRotate()) return;
   removeTetromino();
   tetrominoCell = [];
-  
+  currentRotateIndex++;
+  if (currentRotateIndex === 4) currentRotateIndex = 0;
+  tetromino = TETROMINOES[currentTetromino][currentRotateIndex];
+  console.log("tetromino: ", tetromino);
+  for (let i = 0; i < tetromino.length; i++) {
+    for (let j = 0; j < tetromino.length; j++) {
+      if (tetromino[i][j] === 1) {
+        let sy = tetrominoPoint[0] + j;
+        let sx = tetrominoPoint[1] + i;
+        shortCut(
+          Math.floor(sy),
+          Math.floor(sx)
+        ).style.background = tetrominoColor;
+        tetrominoCell.push([sy, sx]);
+      }
+    }
+  }
 }
- 
+
 function moveDown() {
-  if(!canMove(1,0)) {
+  if (!canMove(1, 0)) {
     commitExist();
     checkLine();
-    tetrominoCel = [];
+    tetrominoCell = [];
     generateTetromino();
     return;
   }
   removeTetromino();
-  for(let i=0;i<tetrominoCell.length;i++) tetrominoCell[i][0]++;
+  for (let i = 0; i < tetrominoCell.length; i++) tetrominoCell[i][0]++;
   tetrominoPoint[0]++;
   showTetromino();
   movingThread = setTime("moveDown()", movingSpeed);
 }
 
 function initNextTable() {
-  for(let i=0;i<4;i++) {
-    for(let j=0;j<4;j++) {
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
       shortCut(String(i), String(j)).style.background = "#7D7D7D";
     }
   }
@@ -259,34 +286,36 @@ function generateTetromino() {
   currentTetromino = nextTetromino;
   currentColorIndex = nextColorIndex;
   tetrominoColor = tetrominoColorArray[currentColorIndex];
-  let tetromino = TETROMINOES[currentTetromino];
+  let tetromino = TETROMINOES[currentTetromino][0];
   pickingNextTetromino();
   pickingNextColor();
   displayNextTetromino();
   for (let i = 0; i < tetromino.length; i++) {
-    let sy = tetrominoPoint[0] + tetromino[i][0];
-    let sx = tetrominoPoint[1] + tetromino[i][1];
-    if (!isValidPoint(sy, sx)) gameOver();
-    //let el = shortCut(Math.floor(sy), Math.floor(sx));
-    //el.style.background = tetrominoColor;
-    shortCut(Math.floor(sy), Math.floor(sx)).style.background = tetrominoColor;
-    tetrominoCell.push([sy, sx]);
+    for (let j = 0; j < tetromino.length; j++) {
+      if (tetromino[i][j] === 1) {
+        let sy = tetrominoPoint[0] + j;
+        let sx = tetrominoPoint[1] + i;
+        shortCut(
+          Math.floor(sy),
+          Math.floor(sx)
+        ).style.background = tetrominoColor;
+        tetrominoCell.push([sy, sx]);
+      }
+    }
   }
   levelStack++;
-  leveling();
+  //leveling();
   movingThread = setTimeout("moveDown()", movingSpeed);
 }
 
 function displayNextTetromino() {
   initNextTable();
-  let tetromino = TETROMINOES[nextTetromino];
+  let tetromino = TETROMINOES[nextTetromino][0];
   let color = tetrominoColorArray[nextColorIndex];
   for (let i = 0; i < tetromino.length; i++) {
-    let y = tetromino[i][0];
-    let x = tetromino[i][1];
-//    document.getElementById(String(y)+String(x)).style.background = color;
-    shortCut(y, x).style.background = color;
-    //shortCut(String(y)+String(x)).style.background = color;
+    for (let j = 0; j < tetromino.length; j++) {
+      if (tetromino[i][j] === 1) shortCut(j, i).style.background = color;
+    }
   }
 }
 
@@ -368,7 +397,6 @@ function keyDownEventHandler(e) {
   }
 }
 
-
 function init() {
   drawField();
   generateField();
@@ -383,6 +411,5 @@ function init() {
   pickingNextColor();
   generateTetromino();
 }
-
 
 init();
