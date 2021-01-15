@@ -9,7 +9,7 @@ const KEY = {
 };
 
 let height = 34; // field size
-let width = 20; // field size
+let width = 17; // field size
 let tileColor = "#BDBDBD",
   tetrominoColor,
   wallColor = "#7D7D7D";
@@ -252,7 +252,7 @@ function pause() {
 
 function gameOver() {
   clearTimeout(movingThread);
-  initExistField();
+  generateField();
   alert("[Game Over]\nLevel: " + level + "\nScore: " + score);
   document.getElementById("gameField").style.visibility = "hidden";
   document.getElementById("gameover").style.visibility = "visible";
@@ -402,7 +402,6 @@ function rotateTetromino() {
   if (!canRotate()) return;
   removeTetromino();
   tetrominoCell = [];
-  console.log("tetrominoCell: ", tetrominoCell);
   currentRotateIndex++;
   if (currentRotateIndex === 4) currentRotateIndex = 0;
   tetromino = TETROMINOES[currentTetromino][currentRotateIndex];  
@@ -416,13 +415,10 @@ function rotateTetromino() {
           Math.floor(sx)
         ).style.background = tetrominoColor;
         tetrominoCell.push([sy, sx]);
-        //console.log("tetrominoCell: ", tetrominoCell);
       }
     }
   }
   showTetromino();
-  //console.log("currentRotateIndex: ", currentRotateIndex);
-  //console.log("tetrominoCell: ", tetrominoCell);
 }
 
 function goBottom() {
@@ -482,6 +478,7 @@ function generateTetromino() {
       if (tetromino[i][j] === 1) {
         let sy = tetrominoPoint[0] + j;
         let sx = tetrominoPoint[1] + i;
+        if(!isValidPoint(sy,sx)) gameOver();
         shortCut(
           Math.floor(sy),
           Math.floor(sx)
