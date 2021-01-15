@@ -41,10 +41,10 @@ let TETROMINOES = [
       [0, 0, 0, 0],
     ],
     [
-      [0, 0, 0, 0],
-      [1, 1, 1, 1],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0],
     ],
     [
       [0, 0, 0, 0],
@@ -53,10 +53,10 @@ let TETROMINOES = [
       [0, 0, 0, 0],
     ],
     [
-      [0, 0, 0, 0],
-      [1, 1, 1, 1],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0],
     ],
   ],
   [
@@ -68,8 +68,8 @@ let TETROMINOES = [
       [0, 0, 0, 0],
     ],
     [
-      [0, 1, 0, 0],
-      [0, 1, 1, 1],
+      [1, 1, 1, 0],
+      [0, 0, 1, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ],
@@ -80,8 +80,8 @@ let TETROMINOES = [
       [0, 0, 0, 0],
     ],
     [
-      [0, 1, 1, 1],
-      [0, 0, 0, 1],
+      [1, 0, 0, 0],
+      [1, 1, 1, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ],
@@ -95,8 +95,8 @@ let TETROMINOES = [
       [0, 0, 0, 0],
     ],
     [
-      [0, 0, 0, 1],
-      [0, 1, 1, 1],
+      [0, 0, 1, 0],
+      [1, 1, 1, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ],
@@ -107,8 +107,8 @@ let TETROMINOES = [
       [0, 0, 0, 0],
     ],
     [
-      [0, 1, 1, 1],
-      [0, 1, 0, 0],
+      [1, 1, 1, 0],
+      [1, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ],
@@ -385,12 +385,13 @@ function isValidPoint(y, x) {
 
 function canRotate() {
   let tempTetromino = TETROMINOES[currentTetromino][currentRotateIndex];
-  console.log(tempTetromino);
+  //console.log(tempTetromino);
   for (let i = 0; i < tempTetromino.length; i++) {
     for (let j = 0; j < tempTetromino.length; j++) {
       if (tempTetromino[i][j] === 1) {
         let ty = tetrominoPoint[0] + j;
         let tx = tetrominoPoint[1] + i;
+        if(!isValidPoint(ty,tx)) return false;
       }
     }
   }
@@ -401,10 +402,10 @@ function rotateTetromino() {
   if (!canRotate()) return;
   removeTetromino();
   tetrominoCell = [];
+  console.log("tetrominoCell: ", tetrominoCell);
   currentRotateIndex++;
   if (currentRotateIndex === 4) currentRotateIndex = 0;
-  tetromino = TETROMINOES[currentTetromino][currentRotateIndex];
-  console.log("tetromino: ", tetromino);
+  tetromino = TETROMINOES[currentTetromino][currentRotateIndex];  
   for (let i = 0; i < tetromino.length; i++) {
     for (let j = 0; j < tetromino.length; j++) {
       if (tetromino[i][j] === 1) {
@@ -415,10 +416,13 @@ function rotateTetromino() {
           Math.floor(sx)
         ).style.background = tetrominoColor;
         tetrominoCell.push([sy, sx]);
+        //console.log("tetrominoCell: ", tetrominoCell);
       }
     }
   }
   showTetromino();
+  //console.log("currentRotateIndex: ", currentRotateIndex);
+  //console.log("tetrominoCell: ", tetrominoCell);
 }
 
 function goBottom() {
