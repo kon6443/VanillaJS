@@ -10,7 +10,7 @@ const KEY = {
 
 let height = 34; // field size
 let width = 20; // field size
-let tileColor = "rgb(9,17,26)",
+let tileColor = "#BDBDBD",
   tetrominoColor,
   wallColor = "#7D7D7D";
 let currentColorIndex, nextColorIndex;
@@ -19,13 +19,17 @@ let currentTetromino, nextTetromino;
 let tetrominoPoint;
 let generatePoint = [1, Math.floor(width / 2) - 2];
 let tetrominoCell;
+let fastMode = false;
 let movingSpeed,
   initSpeed = 500;
+let movingThread;
 let deltaSpeed = 40;
 let fastSpeed = 25;
 let score,
   level,
   levelStack = 0;
+let realField = [];
+let isPaused = false;
 
 let TETROMINOES = [
   [
@@ -228,8 +232,155 @@ let tetrominoColorArray = [
   "rgb(102,86,167)",
 ];
 
+function info() {
+  alert("This is an alert.\n");
+}
+
+function pause() {
+  if (isPaused) {
+    movingThread = setTimeout("moveDown()", movingSpeed);
+    document.getElementById("pause").style.visibility = "hidden";
+    document.getElementById("gameField").style.visibility = "visible";
+    isPaused = false;
+  } else {
+    clearTimeout(movingThread);
+    document.getElementById("gameField").style.visibility = "hidden";
+    document.getElementById("pause").style.visibility = "visible";
+    isPaused = true;
+  }
+}
+
+function gameOver() {
+  clearTimeout(movingThread);
+  initExistField();
+  alert("[Game Over]\nLevel: " + level + "\nScore: " + score);
+  document.getElementById("gameField").style.visibility = "hidden";
+  document.getElementById("gameover").style.visibility = "visible";
+}
+
+function displayCombo(combo, finalScore) {
+  let comboStr = combo + " COMBO +" + finalScore;
+  document.getElementById("comboField").innerHTML = comboStr;
+  setTimeout(function () {
+    document.getElementById("comboField").innerHTML = "";
+  }, 700);
+}
+
+function updateScore(plusScore, combo) {
+  let comboScore = plusScore * combo;
+  score += comboScore;
+  document.getElementById("score").innerHTML = score;
+  return comboScore;
+}
+
+function leveling() {
+  if (level === 10) return;
+  if (levelStack === level * 10) {
+    level++;
+    levelStack = 0;
+    if (!fastMode) movingSpeed = initSpeed - level * deltaSpeed;
+  }
+  document.getElementById("level").innerHTML = level;
+}
+
+function removeLine(lineIndex) {
+  for (let i = lineIndex - 1; i >= 1; i--) {
+    for (let j = 1; j < width - 1; j++) {
+      shortCut(i + 1, j).style.background = shortCut(i, j).style.background;
+      realField[i + 1][j] = realField[i][j];
+    }
+  }
+}
+
+function isFull(lineIndex) {
+  for (let i = 1; i < width - 1; i++) if (!realField[lineIndex][i]) return false;
+  return true;
+}
+
+function checkLine() {
+  let plusScore = level * 100;
+  let combo = 0;
+  let finalScore = 0;
+  for (let i = height - 2; i > 1; i--) {
+    if (isFull(i)) {
+      removeLine(i);
+      i++;
+      finalScore += updateScore(plusScore, ++combo);
+    }
+    if (combo > 0) displayCombo(combo, finalScore);
+  }
+}
+
+function commitExist() {
+  for (let i = 0; i < tetrominoCell.length; i++) {
+    let y = tetrominoCell[i][0];
+    let x = tetrominoCell[i][1];
+    realField[y][x] = true;
+  }
+}
+
+function moveSlow() {
+  if (!fastMode) return;
+  clearTimeout(movingThread);
+  movingSpeed = initSpeed - level * deltaSpeed;
+  movingThread = setTimeout("moveDown()", movingSpeed);
+  fastMode = false;
+}
+
+function moveFast() {
+  if (fastMode) return;
+  clearTimeout(movingThread);
+  movingSpeed = fastSpeed;
+  movingThread = setTimeout("moveDown()", movingSpeed);
+  fastMode = true;
+}
+
+function moveLR(delta) {
+  if (!canMove(0, delta) || isPaused) return;
+  removeTetromino();
+  for (let i = 0; i < tetrominoCell.length; i++) tetrominoCell[i][1] += delta;
+  tetrominoPoint[1] += delta;
+  showTetromino();
+}
+
+function canMove(dy, dx) {
+  for (let i = 0; i < tetrominoCell.length; i++) {
+    let ny = tetrominoCell[i][0] + dy;
+    let nx = tetrominoCell[i][1] + dx;
+    if (!isValidPoint(ny, nx)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function showTetromino() {
+  for (let i = 0; i < tetrominoCell.length; i++) {
+    shortCut(
+      tetrominoCell[i][0],
+      tetrominoCell[i][1]
+    ).style.background = tetrominoColor;
+  }
+}
+
+function removeTetromino() {
+  for (let i = 0; i < tetrominoCell.length; i++) {
+    shortCut(
+      tetrominoCell[i][0],
+      tetrominoCell[i][1]
+    ).style.background = tileColor;
+  }
+}
+
+//  true for valid, false for invalid
 function isValidPoint(y, x) {
-  return !(y <= 0 || y >= H - 1 || x <= 0 || x >= W - 1 || existField[y][x]);
+  return !(
+    y <= 0 ||
+    y >= height - 1 ||
+    x <= 0 ||
+    x >= width - 1 ||
+    realField[y][x]
+  );
 }
 
 function canRotate() {
@@ -240,7 +391,6 @@ function canRotate() {
       if (tempTetromino[i][j] === 1) {
         let ty = tetrominoPoint[0] + j;
         let tx = tetrominoPoint[1] + i;
-        if (!isValidPoint(ty, tx)) return false;
       }
     }
   }
@@ -271,6 +421,23 @@ function rotateTetromino() {
   showTetromino();
 }
 
+function goBottom() {
+  while(canMove(1, 0)) {
+    if (!canMove(1, 0)) {
+      commitExist();
+      checkLine();
+      tetrominoCell = [];
+      generateTetromino();
+      return;
+    }
+    removeTetromino();
+    //for (let i = 0; i < tetrominoCell.length; i++) tetrominoCell[i][0]++;
+    for (let i = 0; i < tetrominoCell.length; i++) tetrominoCell[i][0]++;
+    tetrominoPoint[0]++;
+    showTetromino();
+  }
+}
+
 function moveDown() {
   if (!canMove(1, 0)) {
     commitExist();
@@ -280,16 +447,19 @@ function moveDown() {
     return;
   }
   removeTetromino();
+  //for (let i = 0; i < tetrominoCell.length; i++) tetrominoCell[i][0]++;
   for (let i = 0; i < tetrominoCell.length; i++) tetrominoCell[i][0]++;
   tetrominoPoint[0]++;
   showTetromino();
-  movingThread = setTime("moveDown()", movingSpeed);
+  movingThread = setTimeout("moveDown()", movingSpeed);
 }
 
 function initNextTable() {
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
-      shortCut(String(i), String(j)).style.background = "#7D7D7D";
+      //shortCut(String(i), String(j)).style.background = "#7D7D7D";
+      document.getElementById(String(i) + String(j)).style.background =
+        "#7D7D7D";
     }
   }
 }
@@ -317,7 +487,7 @@ function generateTetromino() {
     }
   }
   levelStack++;
-  //leveling();
+  leveling();
   movingThread = setTimeout("moveDown()", movingSpeed);
 }
 
@@ -327,7 +497,10 @@ function displayNextTetromino() {
   let color = tetrominoColorArray[nextColorIndex];
   for (let i = 0; i < tetromino.length; i++) {
     for (let j = 0; j < tetromino.length; j++) {
-      if (tetromino[i][j] === 1) shortCut(j, i).style.background = color;
+      //if (tetromino[i][j] === 1) shortCut(j, i).style.background = color;
+      if (tetromino[i][j] === 1) {
+        document.getElementById(String(j) + String(i)).style.background = color;
+      }
     }
   }
 }
@@ -393,13 +566,20 @@ document.onkeydown = keyDownEventHandler;
 function keyDownEventHandler(e) {
   switch (e.keyCode) {
     case KEY.LEFT:
-      setTimeOut("moveLR(-1)", 0);
+      moveLR(-1);
+      //setTimeout("moveLR(-1)", 0);
       break;
     case KEY.RIGHT:
-      setTimeOut("moveLR(1)", 0);
+      moveLR(1)
+      //setTimeout("moveLR(1)", 0);
       break;
     case KEY.SPACE:
-      setTimeOut("rotateTetromino()", 0);
+      goBottom();
+      //setTimeout("rotateTetromino()", 0);
+      break;
+    case KEY.UP:
+      rotateTetromino()
+      //setTimeout("rotateTetromino()", 0);
       break;
     case KEY.DOWN:
       moveFast();
