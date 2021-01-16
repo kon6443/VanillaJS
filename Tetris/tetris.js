@@ -8,8 +8,8 @@ const KEY = {
   P: 80,
 };
 
-let height = 34; // field size
-let width = 17; // field size
+let height = 31; // field size, original: 34
+let width = 17; // field size, original: 20
 let tileColor = "#BDBDBD",
   tetrominoColor,
   wallColor = "#7D7D7D";
@@ -293,7 +293,8 @@ function removeLine(lineIndex) {
 }
 
 function isFull(lineIndex) {
-  for (let i = 1; i < width - 1; i++) if (!realField[lineIndex][i]) return false;
+  for (let i = 1; i < width - 1; i++)
+    if (!realField[lineIndex][i]) return false;
   return true;
 }
 
@@ -374,6 +375,7 @@ function removeTetromino() {
 
 //  true for valid, false for invalid
 function isValidPoint(y, x) {
+  console.log("realField[y][x]", realField[y][x]);
   return !(
     y <= 0 ||
     y >= height - 1 ||
@@ -385,16 +387,16 @@ function isValidPoint(y, x) {
 
 function canRotate() {
   let tempTetromino = TETROMINOES[currentTetromino][currentRotateIndex];
-  //console.log(tempTetromino);
   for (let i = 0; i < tempTetromino.length; i++) {
     for (let j = 0; j < tempTetromino.length; j++) {
       if (tempTetromino[i][j] === 1) {
         let ty = tetrominoPoint[0] + j;
         let tx = tetrominoPoint[1] + i;
-        if(!isValidPoint(ty,tx)) return false;
+        if (!isValidPoint(ty, tx)) return false;
       }
     }
   }
+  console.log("can Rotate!");
   return true;
 }
 
@@ -404,7 +406,7 @@ function rotateTetromino() {
   tetrominoCell = [];
   currentRotateIndex++;
   if (currentRotateIndex === 4) currentRotateIndex = 0;
-  tetromino = TETROMINOES[currentTetromino][currentRotateIndex];  
+  tetromino = TETROMINOES[currentTetromino][currentRotateIndex];
   for (let i = 0; i < tetromino.length; i++) {
     for (let j = 0; j < tetromino.length; j++) {
       if (tetromino[i][j] === 1) {
@@ -422,7 +424,7 @@ function rotateTetromino() {
 }
 
 function goBottom() {
-  while(canMove(1, 0)) {
+  while (canMove(1, 0)) {
     if (!canMove(1, 0)) {
       commitExist();
       checkLine();
@@ -478,7 +480,7 @@ function generateTetromino() {
       if (tetromino[i][j] === 1) {
         let sy = tetrominoPoint[0] + j;
         let sx = tetrominoPoint[1] + i;
-        if(!isValidPoint(sy,sx)) gameOver();
+        if (!isValidPoint(sy, sx)) gameOver();
         shortCut(
           Math.floor(sy),
           Math.floor(sx)
@@ -567,20 +569,20 @@ document.onkeydown = keyDownEventHandler;
 function keyDownEventHandler(e) {
   switch (e.keyCode) {
     case KEY.LEFT:
-      moveLR(-1);
-      //setTimeout("moveLR(-1)", 0);
+      //moveLR(-1);
+      setTimeout("moveLR(-1)", 100);
       break;
     case KEY.RIGHT:
-      moveLR(1)
-      //setTimeout("moveLR(1)", 0);
+      //moveLR(1)
+      setTimeout("moveLR(1)", 100);
       break;
     case KEY.SPACE:
-      goBottom();
-      //setTimeout("rotateTetromino()", 0);
+      //goBottom();
+      setTimeout("goBottom()", 100);
       break;
     case KEY.UP:
-      rotateTetromino()
-      //setTimeout("rotateTetromino()", 0);
+      //rotateTetromino()
+      setTimeout("rotateTetromino()", 100);
       break;
     case KEY.DOWN:
       moveFast();
