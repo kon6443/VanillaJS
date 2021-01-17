@@ -375,7 +375,7 @@ function removeTetromino() {
 
 //  true for valid, false for invalid
 function isValidPoint(y, x) {
-  console.log("realField[y][x]", realField[y][x]);
+  //console.log("realField[y][x]", realField[y][x]);
   return !(
     y <= 0 ||
     y >= height - 1 ||
@@ -390,13 +390,12 @@ function canRotate() {
   for (let i = 0; i < tempTetromino.length; i++) {
     for (let j = 0; j < tempTetromino.length; j++) {
       if (tempTetromino[i][j] === 1) {
-        let ty = tetrominoPoint[0] + j;
-        let tx = tetrominoPoint[1] + i;
+        let ty = tetrominoPoint[0] + i;
+        let tx = tetrominoPoint[1] + j;
         if (!isValidPoint(ty, tx)) return false;
       }
     }
   }
-  console.log("can Rotate!");
   return true;
 }
 
@@ -410,12 +409,15 @@ function rotateTetromino() {
   for (let i = 0; i < tetromino.length; i++) {
     for (let j = 0; j < tetromino.length; j++) {
       if (tetromino[i][j] === 1) {
-        let sy = tetrominoPoint[0] + j;
-        let sx = tetrominoPoint[1] + i;
+        let sy = tetrominoPoint[0] + i;
+        let sx = tetrominoPoint[1] + j;
+        document.getElementById(String(sy) + " " + String(sx)).style.background = tetrominoColor;
+        /*
         shortCut(
           Math.floor(sy),
           Math.floor(sx)
         ).style.background = tetrominoColor;
+        */
         tetrominoCell.push([sy, sx]);
       }
     }
@@ -478,8 +480,8 @@ function generateTetromino() {
   for (let i = 0; i < tetromino.length; i++) {
     for (let j = 0; j < tetromino.length; j++) {
       if (tetromino[i][j] === 1) {
-        let sy = tetrominoPoint[0] + j;
-        let sx = tetrominoPoint[1] + i;
+        let sy = tetrominoPoint[0] + i;
+        let sx = tetrominoPoint[1] + j;
         if (!isValidPoint(sy, sx)) gameOver();
         shortCut(
           Math.floor(sy),
@@ -502,7 +504,7 @@ function displayNextTetromino() {
     for (let j = 0; j < tetromino.length; j++) {
       //if (tetromino[i][j] === 1) shortCut(j, i).style.background = color;
       if (tetromino[i][j] === 1) {
-        document.getElementById(String(j) + String(i)).style.background = color;
+        document.getElementById(String(i) + String(j)).style.background = color;
       }
     }
   }
