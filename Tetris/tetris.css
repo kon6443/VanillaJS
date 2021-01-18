@@ -22,15 +22,15 @@ td {
 }
 
 #score, #level {
-    font-size: 28px;
+    font-size: 23px;
     text-align: center;
     font-weight: bold;
     color: white;
-    height: 30px;
+    height: 23px;
 }
 
 .sub {
-    font-size: 22px;
+    font-size: 20px;
     text-align: center;
     font-weight: bold;
     color: white;
@@ -40,7 +40,7 @@ td {
 }
 
 #about {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 #about:hover {
@@ -51,8 +51,8 @@ td {
     float: right;
     margin: 0px;
     position: absolute;
-    left: 360px;
-    top: 82px;
+    left: 352px;
+    top: 87px;
 }
 
 #help {
@@ -60,7 +60,7 @@ td {
     text-align: center;
     font-weight: bold;
     color: white;
-    height: 32px;
+    height: 29px;
     margin: 8px;
 }
 

@@ -375,7 +375,6 @@ function removeTetromino() {
 
 //  true for valid, false for invalid
 function isValidPoint(y, x) {
-  //console.log("realField[y][x]", realField[y][x]);
   return !(
     y <= 0 ||
     y >= height - 1 ||
@@ -386,13 +385,17 @@ function isValidPoint(y, x) {
 }
 
 function canRotate() {
-  let tempTetromino = TETROMINOES[currentTetromino][currentRotateIndex];
+  let tempRotateIndex = currentRotateIndex + 1;
+  if (tempRotateIndex === 4) tempRotateIndex = 0;
+  let tempTetromino = TETROMINOES[currentTetromino][tempRotateIndex];
   for (let i = 0; i < tempTetromino.length; i++) {
     for (let j = 0; j < tempTetromino.length; j++) {
       if (tempTetromino[i][j] === 1) {
         let ty = tetrominoPoint[0] + i;
         let tx = tetrominoPoint[1] + j;
-        if (!isValidPoint(ty, tx)) return false;
+        if (!isValidPoint(ty, tx)) {
+          return false;
+        }
       }
     }
   }
@@ -411,13 +414,9 @@ function rotateTetromino() {
       if (tetromino[i][j] === 1) {
         let sy = tetrominoPoint[0] + i;
         let sx = tetrominoPoint[1] + j;
-        document.getElementById(String(sy) + " " + String(sx)).style.background = tetrominoColor;
-        /*
-        shortCut(
-          Math.floor(sy),
-          Math.floor(sx)
+        document.getElementById(
+          String(sy) + " " + String(sx)
         ).style.background = tetrominoColor;
-        */
         tetrominoCell.push([sy, sx]);
       }
     }
@@ -435,7 +434,6 @@ function goBottom() {
       return;
     }
     removeTetromino();
-    //for (let i = 0; i < tetrominoCell.length; i++) tetrominoCell[i][0]++;
     for (let i = 0; i < tetrominoCell.length; i++) tetrominoCell[i][0]++;
     tetrominoPoint[0]++;
     showTetromino();
@@ -451,7 +449,6 @@ function moveDown() {
     return;
   }
   removeTetromino();
-  //for (let i = 0; i < tetrominoCell.length; i++) tetrominoCell[i][0]++;
   for (let i = 0; i < tetrominoCell.length; i++) tetrominoCell[i][0]++;
   tetrominoPoint[0]++;
   showTetromino();
@@ -461,7 +458,6 @@ function moveDown() {
 function initNextTable() {
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
-      //shortCut(String(i), String(j)).style.background = "#7D7D7D";
       document.getElementById(String(i) + String(j)).style.background =
         "#7D7D7D";
     }
@@ -502,10 +498,8 @@ function displayNextTetromino() {
   let color = tetrominoColorArray[nextColorIndex];
   for (let i = 0; i < tetromino.length; i++) {
     for (let j = 0; j < tetromino.length; j++) {
-      //if (tetromino[i][j] === 1) shortCut(j, i).style.background = color;
-      if (tetromino[i][j] === 1) {
+      if (tetromino[i][j] === 1)
         document.getElementById(String(i) + String(j)).style.background = color;
-      }
     }
   }
 }
@@ -534,7 +528,7 @@ function setWall() {
 }
 
 function shortCut(y, x) {
-  var temp = document.getElementById(String(y) + " " + String(x));
+  let temp = document.getElementById(String(y) + " " + String(x));
   return temp;
 }
 
@@ -571,19 +565,15 @@ document.onkeydown = keyDownEventHandler;
 function keyDownEventHandler(e) {
   switch (e.keyCode) {
     case KEY.LEFT:
-      //moveLR(-1);
       setTimeout("moveLR(-1)", 100);
       break;
     case KEY.RIGHT:
-      //moveLR(1)
       setTimeout("moveLR(1)", 100);
       break;
     case KEY.SPACE:
-      //goBottom();
       setTimeout("goBottom()", 100);
       break;
     case KEY.UP:
-      //rotateTetromino()
       setTimeout("rotateTetromino()", 100);
       break;
     case KEY.DOWN:
