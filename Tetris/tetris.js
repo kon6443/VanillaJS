@@ -421,6 +421,7 @@ function rotateTetromino() {
       }
     }
   }
+  console.log("rotateTetromino currentRotateIndex: ", currentRotateIndex);
   showTetromino();
 }
 
@@ -487,6 +488,7 @@ function generateTetromino() {
       }
     }
   }
+  currentRotateIndex = 0;
   levelStack++;
   leveling();
   movingThread = setTimeout("moveDown()", movingSpeed);
