@@ -24,3 +24,22 @@ body {
   text-align: center;
   background-color: #eeeeee;
 }
+
+#rank {
+  width: 50px;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  position: absolute;
+  left: 520px;
+  top: 10px;
+}
+
+
+.rankTitle {
+  font-size: 40px;
+  font-weight: bold;
+  position: absolute;
+  left: 720px;
+  top: -30px;
+}

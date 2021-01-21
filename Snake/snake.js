@@ -12,8 +12,29 @@ let snakeColor = "#A52A2A",
   wallColor = "#2E2E2E",
   coinColor = "#4476C6";
 
+function rank() {
+  let temp;
+  for (let i = 0; i < 10; i++) {
+    if (document.getElementById("rank" + String(i) + "1").innerHTML == 0) {
+      document.getElementById("rank" + String(i) + "1").innerHTML = score;
+      return;
+    }
+    if (score >= document.getElementById("rank" + String(i) + "1").innerHTML) {
+      temp = i;
+      for (let j = i; j < 10 - temp; j++) {
+        document.getElementById(
+          "rank" + String(9 - j) + " " + "1"
+        ).innerHTML = document.getElementById(
+          "rank" + String(8 - j) + " " + "1"
+        ).innerHTML;
+      }
+    }
+  }
+}
+
 function gameOver() {
-  alert("[Game Over]\nScore: " + score);
+  rank();
+  //alert("[Game Over]\nScore: " + score);
   init();
   location.reload();
 }
@@ -41,10 +62,11 @@ function setCoin() {
 
 function isInQueue(y, x) {
   let p = new Array(y, x);
-  for (let i = 0; i < snakeQueue.length; i++) 
+  for (let i = 0; i < snakeQueue.length; i++)
     if (snakeQueue[i][0] === p[0] && snakeQueue[i][1] === p[1]) return true;
   return false;
-}''
+}
+("");
 
 function isCollapsed(y, x) {
   if (isInQueue(y, x)) return true;
