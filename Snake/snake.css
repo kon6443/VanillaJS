@@ -43,3 +43,7 @@ body {
   left: 720px;
   top: -30px;
 }
+
+.showing {
+  display: block;
+}

@@ -12,11 +12,49 @@ let snakeColor = "#A52A2A",
   wallColor = "#2E2E2E",
   coinColor = "#4476C6";
 
+const USER_LS = "currentUser";
+const SHOWING_CN = "showing";
+let rankObject = {
+  "score": 0,
+  "name": null
+}
+
+function saveName(text) {
+  localStorage.setItem(USER_LS, text);
+  console.log("saveName");
+}
+
+function painting(i, text) {
+  console.log(`${text}`);
+  document.getElementById("rank" + String(i) + "2").classList.remove(SHOWING_CN);
+  document.getElementById("rank" + String(i) + "2").add(SHOWING_CN);
+  document.getElementById("rank" + String(i) + "2").innerHTML = `${text}`;
+  console.log(document.getElementById("rank" + String(i) + "2").innerHTML);
+  console.log("painting");
+}
+
+function handleSubmit(i, event) {
+  event.preventDefault();
+  const currentValue = input.value;
+  painting(i);
+  saveName(currentValue);
+  console.log("handleSubmit");
+}
+
+function getName(i) {
+  document.getElementById("rank" + String(i) + "2").classList.add(SHOWING_CN);
+  document.getElementById("rank" + String(i) + "2").addEventListener("submit", handleSubmit(i));
+  console.log("getName");
+}
+
 function rank() {
   let temp;
+  const currentUser = localStorage.getItem(USER_LS);
   for (let i = 0; i < 10; i++) {
     if (document.getElementById("rank" + String(i) + "1").innerHTML == 0) {
-      document.getElementById("rank" + String(i) + "1").innerHTML = score;
+      getName(i);
+      document.getElementById("rank" + String(i) + "1").innerHTML = rankObject.score;
+      document.getElementById("rank" + String(i) + "2").innerHTML = rankObject.name;
       return;
     }
     if (score >= document.getElementById("rank" + String(i) + "1").innerHTML) {
