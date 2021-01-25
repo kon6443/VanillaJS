@@ -12,12 +12,12 @@ let snakeColor = "#A52A2A",
   wallColor = "#2E2E2E",
   coinColor = "#4476C6";
 
-const USER_LS = "currentUser";
+const USER_LS = "score";
 const SHOWING_CN = "showing";
 let rankObject = {
-  "score": 0,
-  "name": null
-}
+  score: 0,
+  name: null,
+};
 
 function saveName(text) {
   localStorage.setItem(USER_LS, text);
@@ -26,44 +26,47 @@ function saveName(text) {
 
 function painting(i, text) {
   console.log(`${text}`);
-  document.getElementById("rank" + String(i) + "2").classList.remove(SHOWING_CN);
+  document
+    .getElementById("rank" + String(i) + "2")
+    .classList.remove(SHOWING_CN);
   document.getElementById("rank" + String(i) + "2").add(SHOWING_CN);
   document.getElementById("rank" + String(i) + "2").innerHTML = `${text}`;
   console.log(document.getElementById("rank" + String(i) + "2").innerHTML);
   console.log("painting");
 }
 
-function handleSubmit(i, event) {
-  event.preventDefault();
+function handleSubmit(e) {
+  e.preventDefault();
   const currentValue = input.value;
-  painting(i);
+  document.getElementById("rank" + String(2) + "2").innerText = `${text}`;
   saveName(currentValue);
-  console.log("handleSubmit");
 }
 
 function getName(i) {
   document.getElementById("rank" + String(i) + "2").classList.add(SHOWING_CN);
-  document.getElementById("rank" + String(i) + "2").addEventListener("submit", handleSubmit(i));
-  console.log("getName");
+  document
+    .getElementById("rank" + String(i) + "2")
+    .addEventListener("submit", handleSubmit);
 }
 
-function rank() {
+function rank(event) {
   let temp;
-  const currentUser = localStorage.getItem(USER_LS);
+  //const currentUser = localStorage.getItem(USER_LS);
   for (let i = 0; i < 10; i++) {
     if (document.getElementById("rank" + String(i) + "1").innerHTML == 0) {
+      document.getElementById("rank" + String(i) + "1").innerHTML = score;
+      localStorage.setItem("score", score);
       getName(i);
-      document.getElementById("rank" + String(i) + "1").innerHTML = rankObject.score;
-      document.getElementById("rank" + String(i) + "2").innerHTML = rankObject.name;
+      event.preventDefault();
       return;
     }
     if (score >= document.getElementById("rank" + String(i) + "1").innerHTML) {
       temp = i;
       for (let j = i; j < 10 - temp; j++) {
         document.getElementById(
-          "rank" + String(9 - j) + " " + "1"
+          "rank" + String(9 - j) + "1"
         ).innerHTML = document.getElementById(
-          "rank" + String(8 - j) + " " + "1"
+          "rank" + String(8 - j) + "1"
         ).innerHTML;
       }
     }
@@ -72,7 +75,7 @@ function rank() {
 
 function gameOver() {
   rank();
-  //alert("[Game Over]\nScore: " + score);
+  alert("[Game Over]\nScore: " + score);
   init();
   location.reload();
 }
