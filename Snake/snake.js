@@ -57,7 +57,7 @@ function rank(event) {
       document.getElementById("rank" + String(i) + "1").innerHTML = score;
       localStorage.setItem("score", score);
       getName(i);
-      event.preventDefault();
+      //event.preventDefault();
       return;
     }
     if (score >= document.getElementById("rank" + String(i) + "1").innerHTML) {
