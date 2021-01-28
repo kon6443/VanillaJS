@@ -35,8 +35,8 @@ function painting(i, text) {
   console.log("painting");
 }
 
-function handleSubmit(e) {
-  e.preventDefault();
+function handleSubmit(event) {
+  event.preventDefault();
   const currentValue = input.value;
   document.getElementById("rank" + String(2) + "2").innerText = `${text}`;
   saveName(currentValue);
@@ -49,14 +49,14 @@ function getName(i) {
     .addEventListener("submit", handleSubmit);
 }
 
-function rank(event) {
-  let temp;
-  //const currentUser = localStorage.getItem(USER_LS);
+let storageScore = [];
+let storageName = [];
+
+function compareRank() {
   for (let i = 0; i < 10; i++) {
     if (document.getElementById("rank" + String(i) + "1").innerHTML == 0) {
       document.getElementById("rank" + String(i) + "1").innerHTML = score;
-      localStorage.setItem("score", score);
-      getName(i);
+      localStorage.setItem("storageScore", score);
       //event.preventDefault();
       return;
     }
@@ -73,9 +73,18 @@ function rank(event) {
   }
 }
 
+function loadRank(event) {
+  let temp;
+  for(let i=0;i<storageScore.length;i++) {
+    document.getElementById("rank" + String(i) + "1").innerHTML = localStorage.getItem(storageScore[i]);
+    document.getElementById("rank" + String(i) + "2").innerHTML = localStorage.getItem(storageName[i]);
+  }
+  compareRank(); 
+}
+
 function gameOver() {
-  rank();
   alert("[Game Over]\nScore: " + score);
+  loadRank();
   init();
   location.reload();
 }
