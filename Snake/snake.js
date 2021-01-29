@@ -12,17 +12,15 @@ let snakeColor = "#A52A2A",
   wallColor = "#2E2E2E",
   coinColor = "#4476C6";
 
+let storageScore = [];
+let storageName = [];
+
 const USER_LS = "score";
 const SHOWING_CN = "showing";
 let rankObject = {
   score: 0,
   name: null,
 };
-
-function saveName(text) {
-  localStorage.setItem(USER_LS, text);
-  console.log("saveName");
-}
 
 function painting(i, text) {
   console.log(`${text}`);
@@ -49,8 +47,10 @@ function getName(i) {
     .addEventListener("submit", handleSubmit);
 }
 
-let storageScore = [];
-let storageName = [];
+function saveRank(text) {
+  localStorage.setItem(USER_LS, text);
+  console.log("saveName");
+}
 
 function compareRank() {
   for (let i = 0; i < 10; i++) {
