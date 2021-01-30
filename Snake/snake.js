@@ -12,32 +12,29 @@ let snakeColor = "#A52A2A",
   wallColor = "#2E2E2E",
   coinColor = "#4476C6";
 
-let storageScore = [];
-let storageName = [];
-
-const USER_LS = "score";
+let givenName;
+  
 const SHOWING_CN = "showing";
 let rankObject = {
   score: 0,
   name: null,
 };
+rankObject = [];
 
-function painting(i, text) {
-  console.log(`${text}`);
-  document
-    .getElementById("rank" + String(i) + "2")
-    .classList.remove(SHOWING_CN);
-  document.getElementById("rank" + String(i) + "2").add(SHOWING_CN);
-  document.getElementById("rank" + String(i) + "2").innerHTML = `${text}`;
-  console.log(document.getElementById("rank" + String(i) + "2").innerHTML);
-  console.log("painting");
+const form = document.querySelector(".js-form");
+
+function showName(text) {
+  let lastNum = localStorage.getItem(rankObject).length - 1;
+  document.getElementById("rank" + String(lastNum) + "2").classList.add(SHOWING_CN);
+  document.getElementById("rank" + String(lastNum) + "2").innerHTML = `${text}`;
 }
 
 function handleSubmit(event) {
   event.preventDefault();
   const currentValue = input.value;
-  document.getElementById("rank" + String(2) + "2").innerText = `${text}`;
+  showName(currentValue);
   saveName(currentValue);
+  loadRank();
 }
 
 function getName(i) {
@@ -47,16 +44,19 @@ function getName(i) {
     .addEventListener("submit", handleSubmit);
 }
 
-function saveRank(text) {
-  localStorage.setItem(USER_LS, text);
-  console.log("saveName");
+function saveName(text) {
+  if(localStorage.length == 0) return;
+  else {
+    let lastNum = localStorage.getItem(rankObject).length - 1;
+    localStorage.setItem(rankObject[lastNum].name, text);
+  }
 }
 
 function compareRank() {
   for (let i = 0; i < 10; i++) {
     if (document.getElementById("rank" + String(i) + "1").innerHTML == 0) {
       document.getElementById("rank" + String(i) + "1").innerHTML = score;
-      localStorage.setItem("storageScore", score);
+      localStorage.setItem("storageScore", rankObject[i].score);
       //event.preventDefault();
       return;
     }
@@ -73,20 +73,47 @@ function compareRank() {
   }
 }
 
-function loadRank(event) {
-  let temp;
-  for(let i=0;i<storageScore.length;i++) {
-    document.getElementById("rank" + String(i) + "1").innerHTML = localStorage.getItem(storageScore[i]);
-    document.getElementById("rank" + String(i) + "2").innerHTML = localStorage.getItem(storageName[i]);
+function loadRank() {
+  if(localStorage.length == 0) return;
+  else {
+    for(let i=0;i<localStorage.rankObject.length;i++) {
+      document.getElementById("rank" + String(i) + "1").innerHTML = localStorage.getItem(rankObject[i].score);
+      document.getElementById("rank" + String(i) + "2").innerHTML = localStorage.getItem(rankObject[i].name);
+    }
+    //compareRank();     
   }
-  compareRank(); 
+}
+
+function askForName() {
+  form.classList.add(SHOWING_CN);
+  form.addEventListener("submit", handleSubmit);
+}
+
+function saveNewRecord() {
+  let lastNum = localStorage.getItem(rankObject).length - 1;
+  document.getElementById("rank" + String(lastNum) + "1").innerHTML = "score";
+  askForName();
+  document.getElementById("rank" + String(lastNum) + "2").innerHTML = "";
+  
+}
+
+function isNewRecord() {
+  if(localStorage.length == 0) return;
+  else {
+    let lastNum = localStorage.getItem(rankObject).length - 1;
+    if(localStorage.getItem(rankObject[lastNum]) < score) {
+      return true;
+    }
+  }
 }
 
 function gameOver() {
+  console.log(localStorage.getItem(rankObject));
   alert("[Game Over]\nScore: " + score);
-  loadRank();
-  init();
-  location.reload();
+  if(isNewRecord()) saveNewRecord();
+  else location.reload();
+  //init();
+  //location.reload();
 }
 
 function scoring() {
@@ -233,6 +260,10 @@ function init() {
   drawWall();
   y = parseInt(MY / 2);
   x = parseInt(MX / 2);
+  console.log("localStorage.length: ", localStorage.length);
+  console.log("localStorage: ", localStorage);
+  console.log("localStorage.getItem(rankObject): ", localStorage.getItem(rankObject));
+  loadRank();
   setSnake(y, x);
   setCoin();
   score = 0;
