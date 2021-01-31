@@ -13,19 +13,24 @@ let snakeColor = "#A52A2A",
   coinColor = "#4476C6";
 
 let givenName;
-  
+
 const SHOWING_CN = "showing";
+
+/*
 let rankObject = {
   score: 0,
   name: null,
 };
-rankObject = [];
+*/
+let rankObject = [];
 
 const form = document.querySelector(".js-form");
 
 function showName(text) {
   let lastNum = localStorage.getItem(rankObject).length - 1;
-  document.getElementById("rank" + String(lastNum) + "2").classList.add(SHOWING_CN);
+  document
+    .getElementById("rank" + String(lastNum) + "2")
+    .classList.add(SHOWING_CN);
   document.getElementById("rank" + String(lastNum) + "2").innerHTML = `${text}`;
 }
 
@@ -45,7 +50,7 @@ function getName(i) {
 }
 
 function saveName(text) {
-  if(localStorage.length == 0) return;
+  if (localStorage.length == 0) return;
   else {
     let lastNum = localStorage.getItem(rankObject).length - 1;
     localStorage.setItem(rankObject[lastNum].name, text);
@@ -56,7 +61,7 @@ function compareRank() {
   for (let i = 0; i < 10; i++) {
     if (document.getElementById("rank" + String(i) + "1").innerHTML == 0) {
       document.getElementById("rank" + String(i) + "1").innerHTML = score;
-      localStorage.setItem("storageScore", rankObject[i].score);
+      localStorage.setItem("rankObject", rankObject[i].score);
       //event.preventDefault();
       return;
     }
@@ -73,14 +78,23 @@ function compareRank() {
   }
 }
 
+const OBJECT_LS = "rankObject";
+
 function loadRank() {
-  if(localStorage.length == 0) return;
-  else {
-    for(let i=0;i<localStorage.rankObject.length;i++) {
-      document.getElementById("rank" + String(i) + "1").innerHTML = localStorage.getItem(rankObject[i].score);
-      document.getElementById("rank" + String(i) + "2").innerHTML = localStorage.getItem(rankObject[i].name);
+  const loadedRankObjects = localStorage.getItem(OBJECT_LS);
+  if (loadedRankObjects !== null) {
+    for (let i = 0; i < localStorage.rankObject.length; i++) {
+      const parsedRankObjects = JSON.parse(loadedRankObjects);
+      //parsedRankObjects.forEach(function ())
+
+      document.getElementById(
+        "rank" + String(i) + "1"
+      ).innerHTML = localStorage.getItem(rankObject[i].score);
+      document.getElementById(
+        "rank" + String(i) + "2"
+      ).innerHTML = localStorage.getItem(rankObject[i].name);
     }
-    //compareRank();     
+    //compareRank();
   }
 }
 
@@ -90,30 +104,33 @@ function askForName() {
 }
 
 function saveNewRecord() {
-  let lastNum = localStorage.getItem(rankObject).length - 1;
-  document.getElementById("rank" + String(lastNum) + "1").innerHTML = "score";
+  let lastNum = localStorage.length - 1;
+  if (localStorage.length == 0) lastNum = 0;
+  document.getElementById("rank" + String(lastNum) + "1").innerHTML = score;
+  console.log("saveNewRecord lastNum: ", lastNum);
+  localStorage.rankObject.score.push(score);
+  //localStorage.setItem(localStorage.rankObject[lastNum].score, score);
   askForName();
   document.getElementById("rank" + String(lastNum) + "2").innerHTML = "";
-  
 }
 
 function isNewRecord() {
-  if(localStorage.length == 0) return;
-  else {
+  if (localStorage.length == 0) return  true;
+  else if (localStorage.length <= 10 && localStorage.length > 0) {
     let lastNum = localStorage.getItem(rankObject).length - 1;
-    if(localStorage.getItem(rankObject[lastNum]) < score) {
+    if(lastNum == -1) lastNum = 0;
+    if (localStorage.getItem(rankObject[lastNum]) < score) {
       return true;
     }
-  }
+  } else return false;
 }
 
 function gameOver() {
   console.log(localStorage.getItem(rankObject));
   alert("[Game Over]\nScore: " + score);
-  if(isNewRecord()) saveNewRecord();
-  else location.reload();
-  //init();
-  //location.reload();
+  if (isNewRecord()) saveNewRecord();
+  init();
+  location.reload();
 }
 
 function scoring() {
@@ -143,7 +160,7 @@ function isInQueue(y, x) {
     if (snakeQueue[i][0] === p[0] && snakeQueue[i][1] === p[1]) return true;
   return false;
 }
-("");
+//("");
 
 function isCollapsed(y, x) {
   if (isInQueue(y, x)) return true;
@@ -262,7 +279,10 @@ function init() {
   x = parseInt(MX / 2);
   console.log("localStorage.length: ", localStorage.length);
   console.log("localStorage: ", localStorage);
-  console.log("localStorage.getItem(rankObject): ", localStorage.getItem(rankObject));
+  console.log(
+    "localStorage.getItem(rankObject): ",
+    localStorage.getItem(rankObject)
+  );
   loadRank();
   setSnake(y, x);
   setCoin();
