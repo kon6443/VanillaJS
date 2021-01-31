@@ -1,3 +1,7 @@
+const form = document.querySelector(".js-form");
+const input = form.querySelector("input");
+const greeting = document.querySelector(".js-greetings");
+
 let y, x; // player
 let cy, cx; // coin
 let MY = 20,
@@ -24,8 +28,6 @@ let rankObject = {
 */
 let rankObject = [];
 
-const form = document.querySelector(".js-form");
-
 function showName(text) {
   let lastNum = localStorage.getItem(rankObject).length - 1;
   document
@@ -35,6 +37,7 @@ function showName(text) {
 }
 
 function handleSubmit(event) {
+  console.log("handlesubmit");
   event.preventDefault();
   const currentValue = input.value;
   showName(currentValue);
@@ -98,8 +101,10 @@ function loadRank() {
 }
 
 function askForName() {
-  document.querySelector(".js-form").classList.add(SHOWING_CN);
-  document.querySelector(".js-form").addEventListener("submit", handleSubmit);
+  //document.querySelector(".js-form").classList.add(SHOWING_CN);
+  //document.querySelector(".js-form").addEventListener("submit", handleSubmit);
+  form.classList.add(SHOWING_CN);
+  form.addEventListener("submit", handleSubmit);
 }
 
 function saveObjectRank() {

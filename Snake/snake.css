@@ -47,3 +47,11 @@ body {
 .showing {
   display: block;
 }
+
+input {
+  font-size: 25px;
+}
+
+.form {
+  display: none;
+}
