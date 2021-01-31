@@ -86,7 +86,6 @@ function loadRank() {
     for (let i = 0; i < localStorage.rankObject.length; i++) {
       const parsedRankObjects = JSON.parse(loadedRankObjects);
       //parsedRankObjects.forEach(function ())
-
       document.getElementById(
         "rank" + String(i) + "1"
       ).innerHTML = localStorage.getItem(rankObject[i].score);
@@ -99,19 +98,27 @@ function loadRank() {
 }
 
 function askForName() {
-  form.classList.add(SHOWING_CN);
-  form.addEventListener("submit", handleSubmit);
+  document.querySelector(".js-form").classList.add(SHOWING_CN);
+  document.querySelector(".js-form").addEventListener("submit", handleSubmit);
+}
+
+function saveObjectRank() {
+  localStorage.setItem("rankObject", JSON.stringify(rankObject));
 }
 
 function saveNewRecord() {
   let lastNum = localStorage.length - 1;
   if (localStorage.length == 0) lastNum = 0;
   document.getElementById("rank" + String(lastNum) + "1").innerHTML = score;
-  console.log("saveNewRecord lastNum: ", lastNum);
-  localStorage.rankObject.score.push(score);
-  //localStorage.setItem(localStorage.rankObject[lastNum].score, score);
   askForName();
-  document.getElementById("rank" + String(lastNum) + "2").innerHTML = "";
+  document.getElementById("rank" + String(lastNum) + "2").innerHTML = givenName;
+  const object = {
+    name : givenName,
+    score : score,
+  };
+  rankObject.push(object);
+  console.log(object);
+  saveObjectRank();
 }
 
 function isNewRecord() {
