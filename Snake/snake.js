@@ -118,8 +118,8 @@ function saveNewRecord() {
   askForName();
   document.getElementById("rank" + String(lastNum) + "2").innerHTML = givenName;
   const object = {
-    name : givenName,
-    score : score,
+    name: givenName,
+    score: score,
   };
   rankObject.push(object);
   console.log(object);
@@ -127,10 +127,10 @@ function saveNewRecord() {
 }
 
 function isNewRecord() {
-  if (localStorage.length == 0) return  true;
+  if (localStorage.length == 0) return true;
   else if (localStorage.length <= 10 && localStorage.length > 0) {
     let lastNum = localStorage.getItem(rankObject).length - 1;
-    if(lastNum == -1) lastNum = 0;
+    if (lastNum == -1) lastNum = 0;
     if (localStorage.getItem(rankObject[lastNum]) < score) {
       return true;
     }
