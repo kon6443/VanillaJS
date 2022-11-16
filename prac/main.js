@@ -21,11 +21,8 @@ function printGreetingMessage(caseNumber) {
     } else {
         console.log(caseMap[caseNumber]);
     }
-    
 }
 
 for(let i=1;i<11;i++) {
     printGreetingMessage(i);
 }
-
-console.log("The end.....");
