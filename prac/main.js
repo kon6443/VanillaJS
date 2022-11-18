@@ -15,11 +15,10 @@ const caseMap = {
     7: "Bye, World!"
 }
 
-function printGreetingMessage(caseNumber) {
-	caseMap[caseNumber] ??= caseNumber;
-	console.log(caseMap[caseNumber]);
+function getGreetingMessage(caseNumber) {
+	return caseMap[caseNumber] ??= caseNumber;
 }
 
 for(let i=1;i<11;i++) {
-    printGreetingMessage(i);
+    console.log(getGreetingMessage(i));
 }
