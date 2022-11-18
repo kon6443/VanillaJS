@@ -16,11 +16,8 @@ const caseMap = {
 }
 
 function printGreetingMessage(caseNumber) {
-    if(caseMap[caseNumber]===undefined) {
-        console.log(caseNumber);
-    } else {
-        console.log(caseMap[caseNumber]);
-    }
+	caseMap[caseNumber] ??= caseNumber;
+	console.log(caseMap[caseNumber]);
 }
 
 for(let i=1;i<11;i++) {
