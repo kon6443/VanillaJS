@@ -1,9 +1,0 @@
-{
-    "liveServer.settings.https": {
-        "enable": false
-    },
-    "liveServer.settings.CustomBrowser": null,
-    "liveServer.settings.AdvanceCustomBrowserCmdLine": null,
-    "liveServer.settings.multiRootWorkspaceName": "2048",
-    "liveServer.settings.port": 0
-}

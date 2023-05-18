@@ -26,6 +26,116 @@ let rankObject = {
   name: null,
 };
 */
+let rankObject = [];
+
+function showName(text) {
+  let lastNum = localStorage.getItem(rankObject).length - 1;
+  document
+    .getElementById("rank" + String(lastNum) + "2")
+    .classList.add(SHOWING_CN);
+  document.getElementById("rank" + String(lastNum) + "2").innerHTML = `${text}`;
+}
+
+function handleSubmit(event) {
+  console.log("handlesubmit");
+  event.preventDefault();
+  const currentValue = input.value;
+  showName(currentValue);
+  saveName(currentValue);
+  loadRank();
+}
+
+function getName(i) {
+  document.getElementById("rank" + String(i) + "2").classList.add(SHOWING_CN);
+  document
+    .getElementById("rank" + String(i) + "2")
+    .addEventListener("submit", handleSubmit);
+}
+
+function saveName(text) {
+  if (localStorage.length == 0) return;
+  else {
+    let lastNum = localStorage.getItem(rankObject).length - 1;
+    localStorage.setItem(rankObject[lastNum].name, text);
+  }
+}
+
+function compareRank() {
+  for (let i = 0; i < 10; i++) {
+    if (document.getElementById("rank" + String(i) + "1").innerHTML == 0) {
+      document.getElementById("rank" + String(i) + "1").innerHTML = score;
+      localStorage.setItem("rankObject", rankObject[i].score);
+      //event.preventDefault();
+      return;
+    }
+    if (score >= document.getElementById("rank" + String(i) + "1").innerHTML) {
+      temp = i;
+      for (let j = i; j < 10 - temp; j++) {
+        document.getElementById(
+          "rank" + String(9 - j) + "1"
+        ).innerHTML = document.getElementById(
+          "rank" + String(8 - j) + "1"
+        ).innerHTML;
+      }
+    }
+  }
+}
+
+const OBJECT_LS = "rankObject";
+
+function loadRank() {
+  const loadedRankObjects = localStorage.getItem(OBJECT_LS);
+  if (loadedRankObjects !== null) {
+    for (let i = 0; i < localStorage.rankObject.length; i++) {
+      const parsedRankObjects = JSON.parse(loadedRankObjects);
+      //parsedRankObjects.forEach(function ())
+      document.getElementById(
+        "rank" + String(i) + "1"
+      ).innerHTML = localStorage.getItem(rankObject[i].score);
+      document.getElementById(
+        "rank" + String(i) + "2"
+      ).innerHTML = localStorage.getItem(rankObject[i].name);
+    }
+    //compareRank();
+  }
+}
+
+function askForName() {
+  //document.querySelector(".js-form").classList.add(SHOWING_CN);
+  //document.querySelector(".js-form").addEventListener("submit", handleSubmit);
+  form.classList.add(SHOWING_CN);
+  form.addEventListener("submit", handleSubmit);
+}
+
+function saveObjectRank() {
+  localStorage.setItem("rankObject", JSON.stringify(rankObject));
+}
+
+function saveNewRecord() {
+  let lastNum = localStorage.length - 1;
+  if (localStorage.length == 0) lastNum = 0;
+  document.getElementById("rank" + String(lastNum) + "1").innerHTML = score;
+  askForName();
+  document.getElementById("rank" + String(lastNum) + "2").innerHTML = givenName;
+  const object = {
+    name: givenName,
+    score: score,
+  };
+  rankObject.push(object);
+  console.log(object);
+  saveObjectRank();
+}
+
+function isNewRecord() {
+  if (localStorage.length == 0) return true;
+  else if (localStorage.length <= 10 && localStorage.length > 0) {
+    let lastNum = localStorage.getItem(rankObject).length - 1;
+    if (lastNum == -1) lastNum = 0;
+    if (localStorage.getItem(rankObject[lastNum]) < score) {
+      return true;
+    }
+  } else return false;
+}
 
 function gameOver() {
   console.log(localStorage.getItem(rankObject));
@@ -179,6 +289,13 @@ function init() {
   drawWall();
   y = parseInt(MY / 2);
   x = parseInt(MX / 2);
+  console.log("localStorage.length: ", localStorage.length);
+  console.log("localStorage: ", localStorage);
+  console.log(
+    "localStorage.getItem(rankObject): ",
+    localStorage.getItem(rankObject)
+  );
+  loadRank();
   setSnake(y, x);
   setCoin();
   score = 0;
