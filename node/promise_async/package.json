@@ -1,0 +1,11 @@
+{
+  "name": "promise_async",
+  "version": "1.0.0",
+  "description": "Examples of Promise and async/await.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
