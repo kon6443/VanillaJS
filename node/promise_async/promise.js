@@ -12,6 +12,7 @@ function myPromise() {
     }
   });
 }
+// End of myPromise() function.
 
 function nestedCallbacks() {
     // Read file asynchronously
@@ -37,6 +38,7 @@ function nestedCallbacks() {
         }
     });
 }
+// End of nestedCallbacks() function.
 
 function exampleOfPromise() {
     // Read file asynchronously
@@ -93,6 +95,47 @@ function exampleOfPromise() {
 // End of exampleOfPromise() function.
 
 async function exampleOfasync() {
+    // Read file asynchronously
+    const readFileAsync = async (path) => {
+	    try {
+		    const data = await readFile(path, 'utf8');
+		    return data;
+	    } catch(err) {
+		    throw new Error(err);
+	    }
+    }
+
+    // Process data
+    const processDataAsync = async (data) => {
+	    // Perform some operations with the data..
+
+	    // Simulating asynchronous operations..
+	    await delay(1000);
+	    return 'processed data';
+    };
+
+    // Write file asynchronously
+    const writeFileAsync = async (path, data) => {
+	    try {
+    	    await writeFile(path, data);
+	        console.log('File write successful!');
+	    } catch (err) {
+		    console.error('Error:', err);
+	    }
+    };
+
+    // Usage with async/await
+    const main = async () => {
+        try {
+            const data = await readFileAsync('file.txt');
+            const processedData = await processDataAsync(data);
+            await writeFileAsync('output.txt', processedData);
+        } catch (err) {
+            console.error('Error:', err);
+        }
+    };
+
+    main();
 }
 // End of exampleOfasync() function.
 
@@ -118,6 +161,13 @@ function practicePromiseAll() {
             console.log('Error:', error);
         });
 }
+// End of practicePromiseAll() function.
 
 practicePromiseAll();
 
+function pracPromise() {
+    return new Promise(resolve => resolve(100));
+}
+
+const prac = pracPromise();
+console.log('prac:', prac);
