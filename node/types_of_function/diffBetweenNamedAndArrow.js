@@ -22,12 +22,12 @@ const person = {
     greet: function() {
         // 일반 함수가 메소드 형태로 호출 될 때 `this` 값은 자동으로 해당 객체에 바인딩 됩니다. 따라서 John을 갖습니다.
         console.log('person.greet():', this.name); // John
+
         // 하지만 아래는 독립적으로 실행되는 함수로 `this`값은 undefined를 갖습니다.
         const namedFunction = function() {
             console.log('namedFunction():', this.name);
         }
         namedFunction(); // undefined
-
 
         /**
         * Arrow functions do not have their own `this` binding.
