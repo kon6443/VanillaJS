@@ -1,5 +1,7 @@
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 
+let max = 10_000_000;
+
 function sieveOfEratosthenes(start, range) {
     let numbers = Array(range+1).fill(true);
     const end = start + range;
@@ -20,44 +22,54 @@ function sieveOfEratosthenes(start, range) {
     return primes;
 }
 
-let range = 10_000_000;
+function measureSingleThread() {
+    console.time('single');
+    let singleThreadPrimes = sieveOfEratosthenes(2, max);
+    console.timeEnd('single');
+    console.log('Sieve of Eratosthenes: ', singleThreadPrimes);
+    console.log('Number of prime numbers:', singleThreadPrimes.length);
+}
 
-console.time('single');
-let primes = sieveOfEratosthenes(range);
-console.timeEnd('single');
-console.log('Sieve of Eratosthenes: ', primes);
-console.log('Number of prime numbers:', primes.length);
-
-console.time('multi');
 if(isMainThread) {
+    measureSingleThread();
+
+    console.time('multi');
+    let begin = 2;
     const number_of_threads = 8;
-    let divided_task = Math.ceil(range/number_of_threads);
+    let threads = [];
+    let range = Math.ceil((max-begin)/number_of_threads);
     for(let i=0;i<number_of_threads-1;i++) {
-        const wStart = start;
-        threads.add(new Worker(__filename, {workerData: {start: wStart, range: range} }));
-        start += range;
+        console.log('range: ', range);
+        threads.push(new Worker(__filename, {workerData: {start: begin, range: range} }));
+        begin += range;
     }
 
     // last thread.
-    threads.add(__filename, {workerData: {start: start, range: range + ((max-min+1)%number_of_threads)}} );
+    threads.push(new Worker(__filename, {workerData: { start: begin, range: max-begin+1 }}));
 
-    for(let thread of threads) {
+    let multiThreadPrimes = [];
+    for(let i=0;i<number_of_threads;i++) {
+        const thread = threads[i];
+
         thread.on('error', err => {
             console.error(err);
         });
 
         thread.on('exit', () => {
-            threads.delete(thread);
+            threads.splice(i, 1);
             if(threads.size===0) {
+                console.log('done.');
+                console.log('multi: ', multiThreadPrimes);
                 console.timeEnd('multi');
             }
         });
 
         thread.on('message', msg => {
-            primes = primes.concat(msg);
+            multiThreadPrimes = multiThreadPrimes.concat(msg);
         });
     }
 } else {
-    sieveOfEratosthenes(workerData.start, workerData.range);
+    console.log('start:', workerData.start, ', range: ', workerData.rage);
+    let primes = sieveOfEratosthenes(workerData.start, workerData.range);
     parentPort.postMessage(primes);
 }
