@@ -6,4 +6,5 @@
 • this binding - Showing this binding with some examples. <br> 
 • worker thread - Parallel handling. <br> 
 • JavaScript types of function - Explanations of JavaScript types of function. <br>
+• Scope chain example with outer in execution environment. <br>
 
